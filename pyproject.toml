@@ -1,0 +1,11 @@
+[project]
+name = "nqs-rbm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "flax>=0.12.7",
+    "jax>=0.10.2",
+    "jupyter>=1.1.1",
+]
