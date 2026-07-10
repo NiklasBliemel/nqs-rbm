@@ -13,5 +13,5 @@
   "n_sample": 5000,
   "n_therm": 25,
 
-  "n_steps": 300
+  "n_steps": 500
 }

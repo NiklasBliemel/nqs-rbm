@@ -58,7 +58,8 @@ for n in range(n_steps):
     E_mean = jax.numpy.real(tdvpEquation.ElocMean0) / L
     E_var = tdvpEquation.ElocVar0 / L
 
-    print(f"Step: {n:4d}\tE_mean: {E_mean:.4f}\t\tE_var: {E_var:.4f}")
+    if (n+1)%10 == 0:
+        print(f"Step: {n+1:4d}\tE_mean: {E_mean:.4f}\t\tE_var: {E_var:.4f}")
 
     res.append([n, jax.numpy.real(tdvpEquation.ElocMean0) / L, tdvpEquation.ElocVar0 / L])
 
