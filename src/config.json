@@ -1,0 +1,14 @@
+{
+  "float-dtype": "float32",
+  "int-dtype": "int8",
+  "seed": 123,
+  "std": 1e-1,
+  "learning_rate": 0.01,
+  "L": 6,
+  "M": 10,
+  "J": 1.0,
+  "g": -1.0,
+  "n_epochs": 100,
+  "N_mc": 100,
+  "N_therm": 20
+}
