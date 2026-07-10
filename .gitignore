@@ -12,6 +12,7 @@ packages/core/jupyterlab_git_core/labextension
 packages/core/jupyterlab_git_core/_version.py
 src/version.ts
 .env
+uv.lock
 
 # Integration tests
 ui-tests/test-results/
