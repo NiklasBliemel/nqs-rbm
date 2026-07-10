@@ -3,7 +3,7 @@
   "float-dtype": "float32",
   "int-dtype": "int8",
   "param_init_std": 1e-1,
-  "n_hidden_layer": 2,
+  "n_hidden_layer": 6,
 
   "L": 10,
   "J": 1.0,
