@@ -1829,6 +1829,7 @@ dependencies = [
     { name = "jax" },
     { name = "jupyter" },
     { name = "jvmc" },
+    { name = "matplotlib" },
 ]
 
 [package.metadata]
@@ -1838,6 +1839,7 @@ requires-dist = [
     { name = "jax", specifier = ">=0.4.12,<=0.7.2" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "jvmc", specifier = ">=1.5.8" },
+    { name = "matplotlib", specifier = ">=3.11.0" },
 ]
 
 [[package]]
