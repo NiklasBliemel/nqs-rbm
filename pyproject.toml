@@ -8,7 +8,7 @@ dependencies = [
     "einops>=0.8.2",
     "flax>=0.7.0",
     "jax>=0.4.12,<=0.7.2",
-    "jupyter>=1.1.1",
     "jvmc>=1.5.8",
     "matplotlib>=3.11.0",
+    "numpy>=2.4.6",
 ]
