@@ -13,6 +13,8 @@ packages/core/jupyterlab_git_core/_version.py
 src/version.ts
 .env
 uv.lock
+test.py
+test.ipynb
 
 # Integration tests
 ui-tests/test-results/
