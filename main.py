@@ -39,7 +39,6 @@ bias           = config["RBM config"]["bias"]
 param_init_std = config["RBM config"]["param_init_std"]
 
 L = config["TFI Hamiltonian constants"]["L"]
-J = config["TFI Hamiltonian constants"]["J"]
 g = config["TFI Hamiltonian constants"]["g"]
 
 mc_seed =  config["MC Sampler config"]["seed"]
@@ -51,7 +50,7 @@ n_steps = config["Training config"]["n_steps"]
 net = RBM(num_hidden=n_hidden_layer, bias=bias, param_init_std=param_init_std)
 psi = jVMC.vqs.NQS(net, seed=rbm_seed)
 psi.init_net(jnp.zeros((1,1,L)))
-hamiltonian = make_TFI_hamiltonian(L, J, g)
+hamiltonian = make_TFI_hamiltonian(L, g)
 sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updateProposer=jVMC.sampler.propose_spin_flip_Z2, sweepSteps=L, numSamples=n_sample, thermalizationSweeps=n_therm)
 
 train(hamiltonian, sampler, psi, L, g, n_steps)
