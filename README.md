@@ -1,6 +1,6 @@
 # NQS - Restricted Boltzmann Machine (RBM)
 
-This is a example project uploading a jVMC flax model to huggingface.co <br>
+This is a example project for uploading a jVMC flax model to huggingface.co <br>
 
 - **conected huggingface repo**: (https://huggingface.co/NiklasBli/hf-test)
 - **hf_flax_helperfunctions.py**: simple functions to download and upload flax parameter pyTrees
