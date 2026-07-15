@@ -13,7 +13,7 @@
 
   "TFI Hamiltonian constants": {
     "L": 10,
-    "g": 0.7
+    "g": 0.8
   },
 
   "MC Sampler config": {

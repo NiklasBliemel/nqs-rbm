@@ -7,10 +7,10 @@ import jax.numpy as jnp
 import jax.random as random
 import jVMC
 import json
-
 from src.rbm import RBM
 from src.hamiltonian import make_TFI_hamiltonian
 from src.train import train
+from hg_flax_helperfunctions import hf_upload_flax_parameter
 import json
 
 
@@ -36,14 +36,21 @@ n_steps = config["Training config"]["n_steps"]
 repo_id = "NiklasBli/nqs-rbm"
 private = False
 config_branch = f"rbm_{L}_{n_hidden_layer}_{g}"
+parameter_save_dtype = "h5"
 
-# --- setup HF repository & branch if not already existing---
+# --- setup HF repository ---
 login() # returns None if already logged in
 try:
     create_repo(repo_id, repo_type="model", private=private)
     print(f"Repository {repo_id} created.")
 except Exception:
     print(f"Repository {repo_id} already exists.")
+
+# --- upload source files and requirements to main branch ---
+upload_folder(folder_path="src", path_in_repo="src", repo_id=repo_id, allow_patterns="*.py")
+upload_file(path_or_fileobj="pyproject.toml", path_in_repo="pyproject.toml", repo_id=repo_id)
+
+# --- create branch for model configuration ---
 try:
     create_branch(repo_id=repo_id, repo_type="model", branch=config_branch)
     print(f"Branch '{config_branch}' created.")
@@ -58,16 +65,7 @@ hamiltonian = make_TFI_hamiltonian(L, g)
 sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updateProposer=jVMC.sampler.propose_spin_flip_Z2, sweepSteps=L, numSamples=n_sample, thermalizationSweeps=n_therm)
 train(hamiltonian, sampler, psi, L, g, n_steps)
 
-# --- upload to HF ---
-# config branch
-with TemporaryDirectory() as tempdir:
-    os_path = f"{str(tempdir)}/parameter.msgpack"
-    with open(os_path, "wb") as file:
-        packed = serialization.msgpack_serialize(psi.parameters)
-        file.write(packed)
-    upload_file(path_or_fileobj=os_path, path_in_repo="parameter.msgpack", repo_id=repo_id, revision=config_branch)
+# --- upload config, parameters and visualizations to corresponding branch ---
+hf_upload_flax_parameter(psi.parameters, repo_id=repo_id, branch_name=config_branch, dtype=parameter_save_dtype)
 upload_file(path_or_fileobj="config.json", path_in_repo="config.json", repo_id=repo_id, revision=config_branch)
 upload_folder(folder_path="figures", path_in_repo="figures", repo_id=repo_id, revision=config_branch, allow_patterns="*.pdf")
-# main branch
-upload_folder(folder_path="src", path_in_repo="src", repo_id=repo_id, allow_patterns="*.py")
-upload_file(path_or_fileobj="pyproject.toml", path_in_repo="pyproject.toml", repo_id=repo_id)
