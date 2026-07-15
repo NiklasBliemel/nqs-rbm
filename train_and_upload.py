@@ -36,7 +36,7 @@ n_steps = config["Training config"]["n_steps"]
 repo_id = "NiklasBli/nqs-rbm"
 private = False
 config_branch = f"rbm_{L}_{n_hidden_layer}_{g}"
-parameter_save_dtype = "h5"
+parameter_save_dtype = "safetensors"
 
 # --- setup HF repository ---
 login() # returns None if already logged in
@@ -66,6 +66,6 @@ sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updatePropo
 train(hamiltonian, sampler, psi, L, g, n_steps)
 
 # --- upload config, parameters and visualizations to corresponding branch ---
-hf_upload_flax_parameter(psi.parameters, repo_id=repo_id, branch_name=config_branch, dtype=parameter_save_dtype)
+hf_upload_flax_parameter(psi.parameters, repo_id=repo_id, config_branch=config_branch, dtype=parameter_save_dtype)
 upload_file(path_or_fileobj="config.json", path_in_repo="config.json", repo_id=repo_id, revision=config_branch)
 upload_folder(folder_path="figures", path_in_repo="figures", repo_id=repo_id, revision=config_branch, allow_patterns="*.pdf")
