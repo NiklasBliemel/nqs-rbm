@@ -1,42 +1,3 @@
-import jax
-jax.config.update("jax_enable_x64", True)
-import jax.numpy as jnp
-import jax.random as random
-import jVMC
-import json
-
-from src.rbm import RBM
-from src.hamiltonian import make_TFI_hamiltonian
-from src.train import train
-import json
-
-# --- loading experiment config ---
-with open("config.json", "r") as f:
-    config = json.load(f)
-
-rbm_seed       = config["RBM config"]["seed"]
-n_hidden_layer = config["RBM config"]["n_hidden_layer"]
-bias           = config["RBM config"]["bias"]
-param_init_std = config["RBM config"]["param_init_std"]
-
-L = config["TFI Hamiltonian constants"]["L"]
-g = config["TFI Hamiltonian constants"]["g"]
-
-mc_seed =  config["MC Sampler config"]["seed"]
-n_therm =  config["MC Sampler config"]["n_therm"]
-n_sample = config["MC Sampler config"]["n_sample"]
-
-n_steps = config["Training config"]["n_steps"]
-
-# --- model setup & training ---
-net = RBM(num_hidden=n_hidden_layer, bias=bias, param_init_std=param_init_std)
-psi = jVMC.vqs.NQS(net, seed=rbm_seed)
-psi.init_net(jnp.zeros((1,1,L)))
-hamiltonian = make_TFI_hamiltonian(L, g)
-sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updateProposer=jVMC.sampler.propose_spin_flip_Z2, sweepSteps=L, numSamples=n_sample, thermalizationSweeps=n_therm)
-train(hamiltonian, sampler, psi, L, g, n_steps)
-
-
 from huggingface_hub import hf_hub_download, upload_folder, upload_file, login, create_branch, create_repo
 from tempfile import TemporaryDirectory
 from flax import serialization
@@ -72,6 +33,46 @@ try:
     print(f"Branch '{branch_name}' created.")
 except Exception:
     print(f"Branch '{branch_name}' already exists. Proceeding to upload.")
+
+
+import jax
+jax.config.update("jax_enable_x64", True)
+import jax.numpy as jnp
+import jax.random as random
+import jVMC
+import json
+
+from src.rbm import RBM
+from src.hamiltonian import make_TFI_hamiltonian
+from src.train import train
+import json
+
+
+# --- loading experiment config ---
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+rbm_seed       = config["RBM config"]["seed"]
+n_hidden_layer = config["RBM config"]["n_hidden_layer"]
+bias           = config["RBM config"]["bias"]
+param_init_std = config["RBM config"]["param_init_std"]
+
+L = config["TFI Hamiltonian constants"]["L"]
+g = config["TFI Hamiltonian constants"]["g"]
+
+mc_seed =  config["MC Sampler config"]["seed"]
+n_therm =  config["MC Sampler config"]["n_therm"]
+n_sample = config["MC Sampler config"]["n_sample"]
+
+n_steps = config["Training config"]["n_steps"]
+
+# --- model setup & training ---
+net = RBM(num_hidden=n_hidden_layer, bias=bias, param_init_std=param_init_std)
+psi = jVMC.vqs.NQS(net, seed=rbm_seed)
+psi.init_net(jnp.zeros((1,1,L)))
+hamiltonian = make_TFI_hamiltonian(L, g)
+sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updateProposer=jVMC.sampler.propose_spin_flip_Z2, sweepSteps=L, numSamples=n_sample, thermalizationSweeps=n_therm)
+train(hamiltonian, sampler, psi, L, g, n_steps)
 
 # --- upload to HF ---
 hf_upload_flax_parameter(psi.parameters, repo_id)
