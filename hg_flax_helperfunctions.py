@@ -6,7 +6,7 @@ from flax.traverse_util import flatten_dict, unflatten_dict
 from safetensors.flax import save_file, load_file
 
 
-def hf_upload_flax_parameter(parameter: dict, repo_id: str, config_branch: str, metadata: dict[str, str] = None, dtype: str = "safetensors"):
+def hf_upload_flax_parameter(parameter: dict, repo_id: str, revision: str, metadata: dict[str, str] = None, dtype: str = "safetensors"):
     '''''
     dtype options: "msgpack", "hdf5" / "h5", "safetensors"
     '''''
@@ -23,18 +23,18 @@ def hf_upload_flax_parameter(parameter: dict, repo_id: str, config_branch: str, 
         else:
             print("Error: Data type not available! (Choose msgpack or hdf5)")
             return 0
-        upload_file(path_or_fileobj=os_path, path_in_repo=f"parameter.{dtype}", repo_id=repo_id, revision=config_branch)
+        upload_file(path_or_fileobj=os_path, path_in_repo=f"parameter.{dtype}", repo_id=repo_id, revision=revision)
 
 
-def hf_download_flax_parameter(repo_id: str, model_branch: str = "main") -> dict:
+def hf_download_flax_parameter(repo_id: str, revision: str = "main") -> dict:
     '''''
     Example:
     parameter = hf_download_flax_parameter("NiklasBli/nqs-rbm", "rbm_10_6_0.7")
     '''''
-    snapshot = snapshot_download(repo_id=repo_id, revision=model_branch, allow_patterns="parameter.*", dry_run=True)
+    snapshot = snapshot_download(repo_id=repo_id, revision=revision, allow_patterns="parameter.*", dry_run=True)
     filename = snapshot[0].filename
     dtype = filename.split(".")[1]
-    path = hf_hub_download(repo_id=repo_id, revision=model_branch, filename=filename)
+    path = hf_hub_download(repo_id=repo_id, revision=revision, filename=filename)
     if dtype == "msgpack":
         with open(path, 'rb') as file:
             data = file.read()

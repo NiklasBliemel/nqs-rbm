@@ -7,7 +7,7 @@ This is a example project for uploading a jVMC flax model to huggingface.co
 - **train_and_upload.py:** production code for training a model (defined by src/ and config.jason) and uploading it to huggingface.co using following convention:
   - **main Branch:** requirements and source code (model architecture, hamiltonian and training scheme)
   - **other Branches:** parameters of trained model, used configuration and visualization (training graphs etc.)
-    - _naming-convention:_ rbm\_{number_of_sites_L}\_{number_of_hidden_layers}\_{transverse_field_strength_g}
+    - _naming-convention:_ L{number_of_sites}\_g{transverse_field_strength}
 
 ## Transverse Field Ising (TFI) Hamiltonian
 

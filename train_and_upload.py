@@ -34,9 +34,9 @@ n_steps = config["Training config"]["n_steps"]
 
 # --- HF configuration ---
 repo_id = "NiklasBli/nqs-rbm"
-private = False
-config_branch = f"rbm_{L}_{n_hidden_layer}_{g}"
-parameter_save_dtype = "safetensors"
+private = config["Global defs"]["hf_private_repo"]
+revision = f"L{L}_g{g}"
+parameter_save_dtype = config["Global defs"]["parameter_save_dtype"]
 
 # --- setup HF repository ---
 login() # returns None if already logged in
@@ -52,10 +52,10 @@ upload_file(path_or_fileobj="pyproject.toml", path_in_repo="pyproject.toml", rep
 
 # --- create branch for model configuration ---
 try:
-    create_branch(repo_id=repo_id, repo_type="model", branch=config_branch)
-    print(f"Branch '{config_branch}' created.")
+    create_branch(repo_id=repo_id, repo_type="model", branch=revision)
+    print(f"Branch '{revision}' created.")
 except Exception:
-    print(f"Branch '{config_branch}' already exists. Proceeding to upload.")
+    print(f"Branch '{revision}' already exists. Proceeding to upload.")
 
 # --- model setup & training ---
 net = RBM(num_hidden=n_hidden_layer, bias=bias, param_init_std=param_init_std)
@@ -66,6 +66,6 @@ sampler = jVMC.sampler.MCSampler(psi, (L,), random.PRNGKey(mc_seed), updatePropo
 train(hamiltonian, sampler, psi, L, g, n_steps)
 
 # --- upload config, parameters and visualizations to corresponding branch ---
-hf_upload_flax_parameter(psi.parameters, repo_id=repo_id, config_branch=config_branch, dtype=parameter_save_dtype)
-upload_file(path_or_fileobj="config.json", path_in_repo="config.json", repo_id=repo_id, revision=config_branch)
-upload_folder(folder_path="figures", path_in_repo="figures", repo_id=repo_id, revision=config_branch, allow_patterns="*.pdf")
+hf_upload_flax_parameter(psi.parameters, repo_id=repo_id, revision=revision, dtype=parameter_save_dtype)
+upload_file(path_or_fileobj="config.json", path_in_repo="config.json", repo_id=repo_id, revision=revision)
+upload_folder(folder_path="figures", path_in_repo="figures", repo_id=repo_id, revision=revision, allow_patterns="*.pdf")

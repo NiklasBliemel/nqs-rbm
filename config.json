@@ -1,7 +1,9 @@
 {
   "Global defs": {
     "int-dtype": "int8",
-    "float-dtype": "float32"
+    "float-dtype": "float32",
+    "parameter_save_dtype": "msgpack",
+    "hf_private_repo": false
   },
 
   "RBM config": {
@@ -13,7 +15,7 @@
 
   "TFI Hamiltonian constants": {
     "L": 10,
-    "g": 0.6
+    "g": 0.8
   },
 
   "MC Sampler config": {
